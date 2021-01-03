@@ -1,2 +1,2 @@
 # LearningFlutter
-My personal project of Flutter
+My personal projects of Flutter
