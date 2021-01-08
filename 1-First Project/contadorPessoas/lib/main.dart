@@ -6,11 +6,11 @@ void main() {
 
 class Home extends StatefulWidget {
   @override
-  _State createState() => _State();
+  _HomeState createState() => _HomeState();
 }
 
 //class that change the state of actual screen
-class _State extends State<Home> {
+class _HomeState extends State<Home> {
   int _pessoas = 0;
   String _info = "Pode Entrar!";
 
