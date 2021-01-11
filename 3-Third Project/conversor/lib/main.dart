@@ -43,14 +43,21 @@ class _HomeState extends State<Home> {
   final euroController = TextEditingController();
 
   void _realChanged(String text) {
-    print(text);
+    double real = double.parse(text);
+    dollarController.text = (real / dollar).toStringAsFixed(3);
+    euroController.text = (real / euro).toStringAsFixed(3);
   }
 
   void _dollarChanged(String text) {
-    print(text);
+    double dollar = double.parse(text);
+    realController.text = (dollar * this.dollar).toStringAsFixed(3);
+    euroController.text = ((dollar * this.dollar) / euro).toStringAsFixed(3);
   }
+
   void _euroChanged(String text) {
-    print(text);
+    double euro = double.parse(text);
+    realController.text = (euro * this.euro).toStringAsFixed(3);
+    dollarController.text = ((euro * this.euro) / dollar).toStringAsFixed(3);
   }
 
   Widget build(BuildContext context) {
@@ -77,7 +84,7 @@ class _HomeState extends State<Home> {
                 );
               default:
                 if (snapshot.hasError) {
-                  //caso aja algum erro na conexão
+                  //caso haja algum erro na conexão
                   return Center(
                     child: Text(
                       "Erro ao Carregar Dados :(",
