@@ -19,7 +19,9 @@ class _HomeState extends State<Home> {
   final _toDoControler = TextEditingController();
 
   List _toDoList = [];
+  //mapa que salva o ultimo item removido
   Map<String, dynamic> _lastRemoved;
+  //posição do ultimo item removido
   int _lastRemovedPos;
 
   @override
@@ -111,7 +113,7 @@ class _HomeState extends State<Home> {
           _toDoList.removeAt(index);
 
           _saveData();
-
+          // cria um snackbar para remover o item; 
           final snackBar = SnackBar(
               content: Text("Tarefa \"${_lastRemoved["title"]}\" removida"),
               action: SnackBarAction(
@@ -123,8 +125,8 @@ class _HomeState extends State<Home> {
                     });
                   }),
               duration: Duration(seconds: 2));
-          Scaffold.of(context).removeCurrentSnackBar();  
-          Scaffold.of(context).showSnackBar(snackBar); 
+          Scaffold.of(context).removeCurrentSnackBar();
+          Scaffold.of(context).showSnackBar(snackBar);
         });
       },
     );
