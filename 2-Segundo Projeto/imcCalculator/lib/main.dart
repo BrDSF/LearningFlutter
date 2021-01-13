@@ -91,6 +91,7 @@ class _HomeState extends State<Home> {
                     fontSize: 25.0,
                   ),
                   controller: weightController,
+                  // ignore: missing_return
                   validator: (value) {
                     if (value.isEmpty) {
                       return "Insira seu peso!";
@@ -109,6 +110,7 @@ class _HomeState extends State<Home> {
                     fontSize: 25.0,
                   ),
                   controller: heightController,
+                  // ignore: missing_return
                   validator: (value) {
                     if (value.isEmpty) {
                       return "Insira sua Altura!";
@@ -126,6 +128,7 @@ class _HomeState extends State<Home> {
                         color: Colors.green,
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
+                            // ignore: unnecessary_statements
                             _calculate;
                           }
                         },
