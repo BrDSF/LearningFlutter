@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:buscador_gif/ui/gif_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,7 +19,7 @@ class _HomePageState extends State<HomePage> {
     http.Response response;
 
     //caso não tenha pesquisa em gif específico retorna os melhores.
-    if (_search == null)
+    if (_search == null || _search.isEmpty)
       response = await http.get(
           "https://api.giphy.com/v1/gifs/trending?api_key=3bW9zmnhv4RVobmDbwctvOlsVyXfD6WA&limit=20&rating=g");
     else
@@ -24,14 +27,6 @@ class _HomePageState extends State<HomePage> {
           "https://api.giphy.com/v1/gifs/search?api_key=3bW9zmnhv4RVobmDbwctvOlsVyXfD6WA&q=$_search&limit=19&&offset=$_offset&rating=g&lang=en");
 
     return json.decode(response.body);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getGif().then((map) {
-      print(map);
-    });
   }
 
   Widget build(BuildContext context) {
@@ -51,6 +46,7 @@ class _HomePageState extends State<HomePage> {
               decoration: InputDecoration(
                 labelText: "Pesquise Aqui",
                 labelStyle: TextStyle(color: Colors.white),
+                //cria uma borda externa
                 border: OutlineInputBorder(),
               ),
               style: TextStyle(color: Colors.white, fontSize: 18),
@@ -58,6 +54,7 @@ class _HomePageState extends State<HomePage> {
               onSubmitted: (text) {
                 setState(() {
                   _search = text;
+                  _offset = 0;
                 });
               },
             ),
@@ -96,8 +93,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /*rotorna o número do data se search for null
+  não deixando um espaço em branco para o botão de mais, 
+  caso contrário deixa um espaço de pesquisa*/
   int _getCount(List data) {
-    if (_search == null) {
+    if (_search == null ) {
       return data.length;
     } else {
       return data.length + 1;
@@ -113,14 +113,37 @@ class _HomePageState extends State<HomePage> {
       itemCount: _getCount(snapshot.data["data"]),
       //constroi os gifs em cada grid
       itemBuilder: (context, index) {
+        //caso search seja null ou o index seja menor do que o tamanho do data
         if (_search == null || index < snapshot.data["data"].length) {
           //Widget que ativa a possibilidade de clicar na imagem
           return GestureDetector(
-            child: Image.network(
-              snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+            //suavisa o aparecimento das imagens ao contrário do Image.Network
+            child: FadeInImage.memoryNetwork(
+              placeholder: kTransparentImage,
+              image: snapshot.data["data"][index]["images"]["fixed_height"]
+                  ["url"],
               height: 300.0,
               fit: BoxFit.cover,
             ),
+
+            /*Image.network(
+              snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+              height: 300.0,
+              fit: BoxFit.cover,
+            ),*/
+            /*------ ao clicar cria uma rota para a página GifPage-------*/
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          GifPage(snapshot.data["data"][index])));
+            },
+            //abre opções de compartilhamento caso pressione por um curto tempo
+            onLongPress: () {
+              Share.share(snapshot.data["data"][index]["images"]["fixed_height"]
+                  ["url"]);
+            },
           );
         } else {
           return GestureDetector(
